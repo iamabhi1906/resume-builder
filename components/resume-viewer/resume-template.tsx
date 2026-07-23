@@ -12,13 +12,13 @@ interface ResumeTemplateProps {
 export default function ResumeTemplate({ resume }: ResumeTemplateProps) {
   switch (resume.templateId) {
     case 't1':
-      return <ModernTemplate resume={resume} />;
+      return <CreativeTemplate resume={resume} />;
 
     case 't2':
       return <ClassicTemplate resume={resume} />;
 
     case 't3':
-      return <MinimalTemplate resume={resume} />;
+      return <SidebarTemplate resume={resume} />;
     case 't4':
       return <SidebarTemplate resume={resume} />;
     case 't5':

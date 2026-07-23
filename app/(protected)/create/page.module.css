@@ -1,11 +1,10 @@
 .page {
   height: 100%;
-  background: #fafafa;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 300px;
+  margin: 30px 300px;
 }
 
 .container {
@@ -44,39 +43,33 @@
 
 .templateGrid {
   display: grid;
-
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
   gap: 24px;
-
   max-width: 1000px;
-
   margin: 0 auto;
 }
 
 .templateCard {
+  display: flex;
+  justify-content: center;
+}
+
+.previewViewport {
   position: relative;
+  width: 540px;
+  aspect-ratio: 210 / 297;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
 
-  padding: 16px;
-
-  border: 2px solid transparent;
-
-  border-radius: 16px !important;
-
-  background: #ffffff !important;
-
-  cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+.resumeImage {
+  object-fit: cover; /* or contain if you don't want cropping */
 }
 
 .templateCard:hover {
   transform: translateY(-4px);
-
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
 }
 
 .selectedTemplate {
@@ -85,55 +78,22 @@
 
 .checkIcon {
   position: absolute;
-
   z-index: 5;
-
   top: 12px;
   right: 12px;
-
   background: #ffffff;
-
   border-radius: 50%;
 }
 
-/* Preview */
-
-.preview {
-  aspect-ratio: 210 / 297;
-
-  padding: 32px 26px;
-
-  overflow: hidden;
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 8px;
-
-  background: #ffffff;
-}
-
-.previewViewport { width: 100%; height: 297px; overflow: hidden; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
-.livePreview { width: 210mm; transform: scale(.26); transform-origin: top left; pointer-events: none; }
-.dialogPreviewContent { min-height: 70vh; padding: 24px !important; overflow: auto; background: #f4f4f5; }
-.dialogPreviewPaper { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
-/* Template Info */
-
-.templateInfo {
-  padding: 20px 6px 8px;
-}
-
-.templateInfo p {
-  margin-top: 6px;
-
-  line-height: 1.5;
-}
 
 .actions {
   max-width: 1000px;
-
+  width: 100%;
   margin: 40px auto 0;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
   gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 900px) {

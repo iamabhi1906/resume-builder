@@ -4,8 +4,12 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import styles from './page.module.css';
 import ResumeDashboard from '@/components/resume-dashboard';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
+  const session = await auth();
+  if (!session || !session.user) redirect('/login');
   return (
     <Box className={styles.page}>
       <Container maxWidth="lg" className={styles.container}>
@@ -53,7 +57,9 @@ export default async function HomePage() {
           </Box>
         </Paper>
         <Box id="resumes" className={styles.resumeSection}>
-          <Typography variant="h4" className={styles.resumeHeading}>My resumes</Typography>
+          <Typography variant="h4" className={styles.resumeHeading}>
+            My resumes
+          </Typography>
           <ResumeDashboard />
         </Box>
       </Container>

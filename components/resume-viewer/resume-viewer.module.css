@@ -1,5 +1,6 @@
 .page {
-  min-height: 100vh;
+  height: 100%;
+  padding-top: 20px;
 }
 
 .toolbar {
@@ -11,14 +12,21 @@
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
-  background: rgba(255, 255, 255, 0.92);
-
   backdrop-filter: blur(16px);
 }
-.toolbarRow { justify-content: space-between; }
-.titleEditor { align-items: center; }
-.titleInput { width: 210px; }
-.renameIcon { font-size: 16px !important; }
+.toolbarRow {
+  justify-content: space-between;
+  padding: 0px 90px;
+}
+.titleEditor {
+  align-items: center;
+}
+.titleInput {
+  width: 210px;
+}
+.renameIcon {
+  font-size: 16px !important;
+}
 
 .workspace {
   min-height: calc(100vh - 70px);

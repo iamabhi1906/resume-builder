@@ -13,13 +13,10 @@ interface FetchResumesPayload {
 
 export const fetchSavedResumes = createAsyncThunk<Resume[], FetchResumesPayload>('savedResumes/fetch', async ({ userId }) => {
   const key = `resumes:${userId}`;
-
   const data = localStorage.getItem(key);
-
   if (!data) {
     return [];
   }
-
   return JSON.parse(data) as Resume[];
 });
 
@@ -39,4 +36,13 @@ export const updateResumeStore = createAsyncThunk<Resume, SaveResumePayload>('sa
   const updatedResumes = resumes.map((item) => (item.id === resume.id ? resume : item));
   localStorage.setItem(key, JSON.stringify(updatedResumes));
   return resume;
+});
+
+export const deleteResumeStore = createAsyncThunk<Resume[], SaveResumePayload>('savedResumes/delete', async ({ userId, resume }) => {
+  const key = `resumes:${userId}`;
+  const existing = localStorage.getItem(key);
+  const resumes: Resume[] = existing ? JSON.parse(existing) : [];
+  const updatedResumes = resumes.filter((item) => item.id !== resume.id);
+  localStorage.setItem(key, JSON.stringify(updatedResumes));
+  return updatedResumes;
 });

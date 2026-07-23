@@ -27,25 +27,22 @@ interface ResumeViewerProps {
 
 export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState('');
   const [savingTitle, setSavingTitle] = useState(false);
   const { data: session } = useSession();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { resume } = useSelector((state: RootState) => state.resumes);
+  const { resume, loading } = useSelector((state: RootState) => state.resumes);
 
   useEffect(() => {
     if (!session?.user?.email) return;
-    setLoading(true);
     dispatch(fetchSavedResumes({ userId: session.user.email }))
       .unwrap()
       .then((resumes) => {
         if (resumes.some((item) => item.id === resumeId)) dispatch(selectResume(resumeId));
       })
-      .catch((error) => console.error('Failed to load resume:', error))
-      .finally(() => setLoading(false));
+      .catch((error) => console.error('Failed to load resume:', error));
   }, [dispatch, resumeId, session?.user?.email]);
 
   const handleExportPDF = () => {
@@ -61,7 +58,9 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
     }
     setSavingTitle(true);
     try {
-      await dispatch(updateResumeStore({ userId: session.user.email, resume: { ...resume, title: nextTitle, updatedAt: Date.now().toString() } })).unwrap();
+      await dispatch(
+        updateResumeStore({ userId: session.user.email, resume: { ...resume, title: nextTitle, updatedAt: Date.now().toString() } }),
+      ).unwrap();
       setEditingTitle(false);
     } finally {
       setSavingTitle(false);
@@ -72,7 +71,6 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
     return (
       <Box className={styles.loadingPage}>
         <CircularProgress size={32} />
-
         <Typography color="text.secondary">Loading resume...</Typography>
       </Box>
     );
@@ -85,9 +83,7 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
           <Box className={styles.notFoundIcon}>
             <DescriptionOutlinedIcon />
           </Box>
-
           <Typography variant="h5">Resume not found</Typography>
-
           <Button variant="contained" onClick={() => router.push('/')}>
             Back to Resumes
           </Button>
@@ -98,70 +94,73 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
 
   return (
     <Box className={styles.page}>
-      <Box className={styles.toolbar}>
-        <Container maxWidth="xl">
-          <Stack direction="row" spacing={2} className={styles.toolbarRow}>
-            <Stack direction="row" spacing={1.5}>
-              <Tooltip title="Back">
-                <IconButton onClick={() => router.back()}>
-                  <ArrowBackRoundedIcon />
+      <Stack direction="row" spacing={2} className={styles.toolbarRow}>
+        <Box>
+          {editingTitle ? (
+            <Stack direction="row" spacing={0.5} className={styles.titleEditor}>
+              <TextField
+                autoFocus
+                value={title}
+                size="small"
+                onChange={(event) => setTitle(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') saveTitle();
+                  if (event.key === 'Escape') setEditingTitle(false);
+                }}
+                slotProps={{ htmlInput: { maxLength: 80, 'aria-label': 'Resume name' } }}
+                className={styles.titleInput}
+              />
+              <IconButton size="small" disabled={savingTitle} onClick={saveTitle} aria-label="Save resume name">
+                <CheckRoundedIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" onClick={() => setEditingTitle(false)} aria-label="Cancel">
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </Stack>
+          ) : (
+            <Stack direction="row" spacing={0.25} className={styles.titleEditor}>
+              <Typography noWrap>{resume.title}</Typography>
+              <Tooltip title="Rename resume">
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setTitle(resume.title);
+                    setEditingTitle(true);
+                  }}
+                  aria-label="Rename resume"
+                >
+                  <EditOutlinedIcon className={styles.renameIcon} />
                 </IconButton>
               </Tooltip>
-
-              <Box>
-                {editingTitle ? (
-                  <Stack direction="row" spacing={0.5} className={styles.titleEditor}>
-                    <TextField
-                      autoFocus
-                      value={title}
-                      size="small"
-                      onChange={(event) => setTitle(event.target.value)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter') saveTitle();
-                        if (event.key === 'Escape') setEditingTitle(false);
-                      }}
-                      slotProps={{ htmlInput: { maxLength: 80, 'aria-label': 'Resume name' } }}
-                      className={styles.titleInput}
-                    />
-                    <IconButton size="small" disabled={savingTitle} onClick={saveTitle} aria-label="Save resume name"><CheckRoundedIcon fontSize="small" /></IconButton>
-                    <IconButton size="small" onClick={() => setEditingTitle(false)} aria-label="Cancel"><CloseRoundedIcon fontSize="small" /></IconButton>
-                  </Stack>
-                ) : (
-                  <Stack direction="row" spacing={0.25} className={styles.titleEditor}>
-                    <Typography noWrap>{resume.title}</Typography>
-                    <Tooltip title="Rename resume"><IconButton size="small" onClick={() => { setTitle(resume.title); setEditingTitle(true); }} aria-label="Rename resume"><EditOutlinedIcon className={styles.renameIcon} /></IconButton></Tooltip>
-                  </Stack>
-                )}
-
-                <Typography variant="caption" color="text.secondary">
-                  Resume Preview
-                </Typography>
-              </Box>
             </Stack>
+          )}
 
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="outlined"
-                startIcon={<EditOutlinedIcon />}
-                onClick={() => router.push(`/resume/${resume.id}/edit`)}
-                className={styles.desktopAction}
-              >
-                Edit
-              </Button>
+          <Typography variant="caption" color="text.secondary">
+            Resume Preview
+          </Typography>
+        </Box>
 
-              <Tooltip title="Print">
-                <IconButton className={styles.mobileAction} onClick={handleExportPDF}>
-                  <PrintOutlinedIcon />
-                </IconButton>
-              </Tooltip>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            startIcon={<EditOutlinedIcon />}
+            onClick={() => router.push(`/resume/${resume.id}/edit`)}
+            className={styles.desktopAction}
+          >
+            Edit
+          </Button>
 
-              <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExportPDF}>
-                Export PDF
-              </Button>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
+          <Tooltip title="Print">
+            <IconButton className={styles.mobileAction} onClick={handleExportPDF}>
+              <PrintOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Button variant="contained" startIcon={<DownloadRoundedIcon />} onClick={handleExportPDF}>
+            Export PDF
+          </Button>
+        </Stack>
+      </Stack>
 
       <Box className={styles.workspace}>
         <Box className={styles.resumeContainer}>

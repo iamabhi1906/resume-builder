@@ -1,52 +1,53 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import {
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Box,
-  CircularProgress,
-} from "@mui/material";
-import styles from "./page.module.css";
-import { Google } from "@mui/icons-material";
+import React, { useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { TextField, Button, Typography, Alert, Box, CircularProgress } from '@mui/material';
+import styles from './page.module.css';
+import { Google } from '@mui/icons-material';
+import { useSession } from 'next-auth/react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/');
+    }
+  }, [status, router]);
 
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError("Invalid email or password. Please try again.");
+        setError('Invalid email or password. Please try again.');
       } else {
-        router.push("/");
+        router.push('/');
         router.refresh();
       }
     } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignIn = () => {
-    signIn("google", { redirectTo: "/" });
+    signIn('google', { redirectTo: '/' });
   };
 
   return (
@@ -83,19 +84,8 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            disabled={loading}
-          >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Sign In"
-            )}
+          <Button type="submit" variant="contained" color="primary" size="large" fullWidth disabled={loading}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
           </Button>
         </form>
 
