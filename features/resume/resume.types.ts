@@ -13,7 +13,7 @@ export interface ResumeState {
   skills: Skill[];
 }
 
-export type TemplateId = 't1' | 't2' | 't3';
+export type TemplateId = 't1' | 't2' | 't3' | 't4' | 't5';
 
 export interface Resume {
   id: string;

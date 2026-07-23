@@ -111,6 +111,11 @@
 
   background: #ffffff;
 }
+
+.previewViewport { width: 100%; height: 297px; overflow: hidden; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
+.livePreview { width: 210mm; transform: scale(.26); transform-origin: top left; pointer-events: none; }
+.dialogPreviewContent { min-height: 70vh; padding: 24px !important; overflow: auto; background: #f4f4f5; }
+.dialogPreviewPaper { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
 /* Template Info */
 
 .templateInfo {
@@ -127,6 +132,8 @@
   max-width: 1000px;
 
   margin: 40px auto 0;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 @media (max-width: 900px) {

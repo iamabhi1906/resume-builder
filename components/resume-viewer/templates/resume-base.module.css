@@ -1,0 +1,25 @@
+.page { min-height: 297mm; padding: 14mm 16mm; color: #18181b; background: #fff; font-family: Arial, Helvetica, sans-serif; }
+.name { font-size: 30px; font-weight: 800; letter-spacing: -.04em; line-height: 1.1; }
+.header { display: flex; align-items: flex-start; gap: 16px; }.photo { width: 65px; height: 65px; flex: 0 0 auto; border-radius: 50%; object-fit: cover; }
+.headline { margin-top: 6px; font-size: 14px; color: #52525b; }
+.contact { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 13px; font-size: 10px; }
+.contact a { color: inherit; }
+.section { margin-top: 22px; }
+.sectionTitle { padding-bottom: 5px; margin-bottom: 11px; border-bottom: 1.5px solid #18181b; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.entry { margin-bottom: 14px; }
+.entryHeader { display: flex; justify-content: space-between; gap: 12px; }
+.entryTitle { font-size: 11.5px; font-weight: 700; }
+.entryMeta { font-size: 10px; font-weight: 600; }
+.date { flex-shrink: 0; font-size: 9px; white-space: nowrap; }
+.description { margin-top: 6px; font-size: 10px; line-height: 1.5; white-space: pre-line; }
+.highlights { padding-left: 18px; margin: 7px 0 0; font-size: 10px; line-height: 1.45; }
+.projectTitle { font-size: 11px; font-weight: 700; }
+.skillLine { margin-bottom: 5px; font-size: 10px; }
+.classic { padding: 13mm 17mm; }
+.classic .name { font-family: Georgia, serif; text-align: center; }
+.classic .headline, .classic .contact { justify-content: center; text-align: center; }
+.classic .sectionTitle { border-bottom: 1px solid #64748b; color: #334155; }
+.minimal { padding: 15mm 18mm; }
+.minimal .name { font-weight: 500; letter-spacing: -.02em; }
+.minimal .sectionTitle { border: 0; padding: 0; margin-bottom: 8px; color: #6366f1; }
+.minimal .entry { margin-bottom: 11px; }

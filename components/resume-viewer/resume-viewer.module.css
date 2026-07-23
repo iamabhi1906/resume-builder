@@ -15,6 +15,10 @@
 
   backdrop-filter: blur(16px);
 }
+.toolbarRow { justify-content: space-between; }
+.titleEditor { align-items: center; }
+.titleInput { width: 210px; }
+.renameIcon { font-size: 16px !important; }
 
 .workspace {
   min-height: calc(100vh - 70px);

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SavedResumesState } from './resumes.types';
-import { fetchSavedResumes, saveResumeStore } from './resumes.action';
+import { fetchSavedResumes, saveResumeStore, updateResumeStore } from './resumes.action';
 
 const initialState: SavedResumesState = {
   resumes: [],
@@ -38,6 +38,11 @@ const resumesSlice = createSlice({
       })
       .addCase(saveResumeStore.fulfilled, (state, action) => {
         state.resumes.push(action.payload);
+        state.resume = action.payload;
+      })
+      .addCase(updateResumeStore.fulfilled, (state, action) => {
+        const index = state.resumes.findIndex((resume) => resume.id === action.payload.id);
+        if (index !== -1) state.resumes[index] = action.payload;
         state.resume = action.payload;
       });
   },

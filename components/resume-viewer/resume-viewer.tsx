@@ -1,20 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, Container, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Container, IconButton, Paper, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import { useRouter } from 'next/navigation';
 
 import styles from './resume-viewer.module.css';
 import ResumeTemplate from './resume-template';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/app/store';
+import { AppDispatch, RootState } from '@/app/store';
 import { selectResume } from '@/features/resumes/resumes.slice';
+import { useDispatch } from 'react-redux';
+import { fetchSavedResumes, updateResumeStore } from '@/features/resumes/resumes.action';
+import { useSession } from 'next-auth/react';
 
 interface ResumeViewerProps {
   resumeId: string;
@@ -23,21 +28,44 @@ interface ResumeViewerProps {
 export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [title, setTitle] = useState('');
+  const [savingTitle, setSavingTitle] = useState(false);
+  const { data: session } = useSession();
+  const dispatch = useDispatch<AppDispatch>();
 
   const { resume } = useSelector((state: RootState) => state.resumes);
 
   useEffect(() => {
-    try {
-      selectResume(resumeId);
-    } catch (error) {
-      console.error('Failed to load resume:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [resumeId]);
+    if (!session?.user?.email) return;
+    setLoading(true);
+    dispatch(fetchSavedResumes({ userId: session.user.email }))
+      .unwrap()
+      .then((resumes) => {
+        if (resumes.some((item) => item.id === resumeId)) dispatch(selectResume(resumeId));
+      })
+      .catch((error) => console.error('Failed to load resume:', error))
+      .finally(() => setLoading(false));
+  }, [dispatch, resumeId, session?.user?.email]);
 
   const handleExportPDF = () => {
     window.print();
+  };
+
+  const saveTitle = async () => {
+    if (!resume || !session?.user?.email) return;
+    const nextTitle = title.trim();
+    if (!nextTitle || nextTitle === resume.title) {
+      setEditingTitle(false);
+      return;
+    }
+    setSavingTitle(true);
+    try {
+      await dispatch(updateResumeStore({ userId: session.user.email, resume: { ...resume, title: nextTitle, updatedAt: Date.now().toString() } })).unwrap();
+      setEditingTitle(false);
+    } finally {
+      setSavingTitle(false);
+    }
   };
 
   if (loading) {
@@ -72,7 +100,7 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
     <Box className={styles.page}>
       <Box className={styles.toolbar}>
         <Container maxWidth="xl">
-          <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between' }}>
+          <Stack direction="row" spacing={2} className={styles.toolbarRow}>
             <Stack direction="row" spacing={1.5}>
               <Tooltip title="Back">
                 <IconButton onClick={() => router.back()}>
@@ -81,7 +109,29 @@ export default function ResumeViewer({ resumeId }: ResumeViewerProps) {
               </Tooltip>
 
               <Box>
-                <Typography noWrap>{resume.title}</Typography>
+                {editingTitle ? (
+                  <Stack direction="row" spacing={0.5} className={styles.titleEditor}>
+                    <TextField
+                      autoFocus
+                      value={title}
+                      size="small"
+                      onChange={(event) => setTitle(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') saveTitle();
+                        if (event.key === 'Escape') setEditingTitle(false);
+                      }}
+                      slotProps={{ htmlInput: { maxLength: 80, 'aria-label': 'Resume name' } }}
+                      className={styles.titleInput}
+                    />
+                    <IconButton size="small" disabled={savingTitle} onClick={saveTitle} aria-label="Save resume name"><CheckRoundedIcon fontSize="small" /></IconButton>
+                    <IconButton size="small" onClick={() => setEditingTitle(false)} aria-label="Cancel"><CloseRoundedIcon fontSize="small" /></IconButton>
+                  </Stack>
+                ) : (
+                  <Stack direction="row" spacing={0.25} className={styles.titleEditor}>
+                    <Typography noWrap>{resume.title}</Typography>
+                    <Tooltip title="Rename resume"><IconButton size="small" onClick={() => { setTitle(resume.title); setEditingTitle(true); }} aria-label="Rename resume"><EditOutlinedIcon className={styles.renameIcon} /></IconButton></Tooltip>
+                  </Stack>
+                )}
 
                 <Typography variant="caption" color="text.secondary">
                   Resume Preview

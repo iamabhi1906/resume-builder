@@ -1,0 +1,9 @@
+.stepper { width: 100%; overflow: hidden; }
+.header { padding: 24px 32px; border-bottom: 1px solid var(--mui-palette-divider, #e5e7eb); }
+.stepLabel { cursor: pointer; }
+.content { min-height: 500px; padding: 32px; }
+.footer { padding: 16px 32px; border-top: 1px solid var(--mui-palette-divider, #e5e7eb); align-items: center; justify-content: space-between; }
+.previewButton { margin-left: auto !important; margin-right: 12px !important; }
+.previewDialog { min-height: 70vh; padding: 24px !important; overflow: auto; background: #f4f4f5; }
+.previewPaper { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.12); }
+@media (max-width: 600px) { .header, .content { padding: 16px; } .footer { padding: 12px 16px; } .previewButton { margin-right: 4px !important; } }

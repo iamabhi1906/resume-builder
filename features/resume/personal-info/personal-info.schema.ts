@@ -18,6 +18,8 @@ export const personalInfoSchema = z.object({
 
   location: z.string().trim().max(100, 'Location is too long').optional(),
 
+  photoUrl: z.url('Enter a valid image URL').or(z.literal('')).optional(),
+
   website: resumeLinkSchema.optional(),
 
   linkedin: resumeLinkSchema.optional(),
@@ -38,6 +40,7 @@ export const personalInfoDefaultValues: PersonalInfo = {
   email: '',
   phone: '',
   location: '',
+  photoUrl: '',
 
   website: {
     label: '',

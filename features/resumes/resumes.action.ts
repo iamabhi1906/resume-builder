@@ -31,3 +31,12 @@ export const saveResumeStore = createAsyncThunk<Resume, SaveResumePayload>('save
   localStorage.setItem(key, JSON.stringify(updatedResumes));
   return resume;
 });
+
+export const updateResumeStore = createAsyncThunk<Resume, SaveResumePayload>('savedResumes/update', async ({ userId, resume }) => {
+  const key = `resumes:${userId}`;
+  const existing = localStorage.getItem(key);
+  const resumes: Resume[] = existing ? JSON.parse(existing) : [];
+  const updatedResumes = resumes.map((item) => (item.id === resume.id ? resume : item));
+  localStorage.setItem(key, JSON.stringify(updatedResumes));
+  return resume;
+});

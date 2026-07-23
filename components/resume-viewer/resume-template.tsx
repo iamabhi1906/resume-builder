@@ -1,5 +1,9 @@
 import { Resume } from '@/features/resume/resume.types';
 import ModernTemplate from './templates/modern/modern.template';
+import SidebarTemplate from './templates/sidebar.template';
+import CreativeTemplate from './templates/creative.template';
+import ClassicTemplate from './templates/classic.template';
+import MinimalTemplate from './templates/minimal.template';
 
 interface ResumeTemplateProps {
   resume: Resume;
@@ -11,9 +15,14 @@ export default function ResumeTemplate({ resume }: ResumeTemplateProps) {
       return <ModernTemplate resume={resume} />;
 
     case 't2':
-      return <ModernTemplate resume={resume} />;
+      return <ClassicTemplate resume={resume} />;
 
     case 't3':
+      return <MinimalTemplate resume={resume} />;
+    case 't4':
+      return <SidebarTemplate resume={resume} />;
+    case 't5':
+      return <CreativeTemplate resume={resume} />;
     default:
       return <ModernTemplate resume={resume} />;
   }

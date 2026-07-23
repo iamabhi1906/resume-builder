@@ -1,25 +1,20 @@
-import { auth } from '@/lib/auth';
-
 import { Box, Button, Container, Paper, Stack, Typography } from '@mui/material';
 
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import styles from './page.module.css';
+import ResumeDashboard from '@/components/resume-dashboard';
 
 export default async function HomePage() {
-  const session = await auth();
-  const user = session?.user;
-  const firstName = user?.name?.split(' ')[0] ?? 'there';
-
   return (
     <Box className={styles.page}>
       <Container maxWidth="lg" className={styles.container}>
         <Paper elevation={0} className={styles.hero}>
           <Box className={styles.heroContent}>
             <Typography component="h1" className={styles.heroTitle}>
-              Welcome back,
+              Build your next
               <br />
-              <span>{firstName}.</span>
+              <span>great resume.</span>
             </Typography>
 
             <Typography className={styles.heroDescription}>
@@ -31,7 +26,7 @@ export default async function HomePage() {
                 Create Resume
               </Button>
 
-              <Button variant="text" size="large" endIcon={<ArrowForwardRoundedIcon />} className={styles.secondaryButton}>
+              <Button variant="text" size="large" endIcon={<ArrowForwardRoundedIcon />} className={styles.secondaryButton} href="#resumes">
                 View My Resumes
               </Button>
             </Stack>
@@ -57,6 +52,10 @@ export default async function HomePage() {
             </Paper>
           </Box>
         </Paper>
+        <Box id="resumes" className={styles.resumeSection}>
+          <Typography variant="h4" className={styles.resumeHeading}>My resumes</Typography>
+          <ResumeDashboard />
+        </Box>
       </Container>
     </Box>
   );

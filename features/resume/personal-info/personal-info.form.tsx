@@ -3,6 +3,7 @@ import { Box, Divider, Stack, TextField, Typography } from '@mui/material';
 import type { UseFormReturn } from 'react-hook-form';
 import type { PersonalInfo } from './personal-info.schema';
 import LinkFields from './link-field';
+import CloudinaryUpload from '@/components/cloudinary-upload';
 
 interface PersonalInfoFormProps {
   form: UseFormReturn<PersonalInfo>;
@@ -10,7 +11,7 @@ interface PersonalInfoFormProps {
 
 export default function PersonalInfoForm({ form }: PersonalInfoFormProps) {
   const {
-    register,
+    register, setValue, watch,
     formState: { errors },
   } = form;
 
@@ -58,6 +59,11 @@ export default function PersonalInfoForm({ form }: PersonalInfoFormProps) {
         error={Boolean(errors.headline)}
         helperText={errors.headline?.message}
       />
+
+      <Box>
+        <Typography variant="subtitle1">Profile Photo</Typography>
+        <CloudinaryUpload value={watch('photoUrl')} onChange={(url) => setValue('photoUrl', url, { shouldDirty: true })} />
+      </Box>
 
       <Stack
         direction={{
