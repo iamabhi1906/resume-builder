@@ -20,13 +20,34 @@ export default function EditResumePage() {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     if (!session?.user?.email) return;
-    dispatch(fetchSavedResumes({ userId: session.user.email })).unwrap().then((saved) => {
-      const resume = saved.find((item) => item.id === id);
-      if (!resume) return router.replace('/');
-      dispatch(setResume({ templateId: resume.templateId, personalInfo: resume.personalInfo, experiences: resume.experiences, education: resume.education, projects: resume.projects, skills: resume.skills }));
-      setReady(true);
-    });
+    dispatch(fetchSavedResumes({ userId: session.user.email }))
+      .unwrap()
+      .then((saved) => {
+        const resume = saved.find((item) => item.id === id);
+        if (!resume) return router.replace('/');
+        dispatch(
+          setResume({
+            templateId: resume.templateId,
+            personalInfo: resume.personalInfo,
+            experiences: resume.experiences,
+            education: resume.education,
+            projects: resume.projects,
+            skills: resume.skills,
+          }),
+        );
+        setReady(true);
+      });
   }, [dispatch, id, router, session?.user?.email]);
-  if (!session?.user || !ready) return <Box className={styles.loading}><CircularProgress /><Typography>Loading editor…</Typography></Box>;
-  return <Box className={styles.page}><ResumeStepper user={session.user} resumeId={id} /></Box>;
+  if (!session?.user || !ready)
+    return (
+      <Box className={styles.loading}>
+        <CircularProgress />
+        <Typography>Loading editor…</Typography>
+      </Box>
+    );
+  return (
+    <Box className={styles.page}>
+      <ResumeStepper user={session.user} resumeId={id} />
+    </Box>
+  );
 }
